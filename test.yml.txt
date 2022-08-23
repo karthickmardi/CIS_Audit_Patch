@@ -1,0 +1,20 @@
+---
+
+- hosts: localhost-py3
+  tasks:
+  - name: donload from github
+    ansible.builtin.git:
+      repo: https://github.com/ansible-lockdown/Windows-2019-CIS.git
+      dest: /tmp/cis
+      version: devel
+  - name: change the directory to the cloned repo
+    command: cd /tmp/cis
+
+
+- hosts: windows_server
+  tasks:
+  - name: import plays and run the playbook
+    include_tasks: /tmp/cis/tasks/section01.yml
+    when: section01_patch | bool
+    tags:
+      - section01
